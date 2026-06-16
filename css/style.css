@@ -1,0 +1,698 @@
+/**
+ * ============================================
+ * Estilos - Explorador OMDb Mankind
+ * Mobile-First con Menú Hamburguesa
+ * ============================================
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-primario: #ffffff;
+    --color-fondo: #f5f5f5;
+    --color-tarjeta: #ffffff;
+    --color-texto: #1a1a1a;
+    --color-texto-claro: #666666;
+    --color-borde: #e0e0e0;
+    --color-acento: #333333;
+    --color-sidebar: #1a1a1a;
+    --color-sidebar-texto: #ffffff;
+    --sombra: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --sombra-fuerte: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --radio: 8px;
+    --transicion: 0.3s ease;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* ============================================
+ * Botón Menú Hamburguesa
+ * ============================================ */
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1001;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-texto);
+    border-radius: 2px;
+    transition: var(--transicion);
+}
+
+.menu-toggle:hover span {
+    background-color: var(--color-acento);
+}
+
+/* ============================================
+ * Overlay oscuro
+ * ============================================ */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transicion);
+    z-index: 999;
+}
+
+.overlay.activa {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================
+ * Sidebar / Menú Lateral
+ * ============================================ */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: var(--color-sidebar);
+    color: var(--color-sidebar-texto);
+    transition: var(--transicion);
+    z-index: 1000;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.abierta {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--color-sidebar-texto);
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    color: var(--color-sidebar-texto);
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: var(--transicion);
+}
+
+.close-menu:hover {
+    opacity: 0.7;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0.5rem 0;
+}
+
+.sidebar-menu li {
+    padding: 0;
+}
+
+.sidebar-menu a {
+    display: block;
+    padding: 0.8rem 1.2rem;
+    color: var(--color-sidebar-texto);
+    text-decoration: none;
+    transition: var(--transicion);
+    font-size: 0.95rem;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-section {
+    padding: 0.8rem 1.2rem 0.4rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+/* ============================================
+ * Encabezado
+ * ============================================ */
+
+header {
+    background-color: var(--color-primario);
+    color: var(--color-texto);
+    padding: 1rem 1rem 1rem 60px;
+    border-bottom: 1px solid var(--color-borde);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-section h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.2rem;
+    color: var(--color-texto);
+    font-weight: bold;
+}
+
+.palabra-asignada {
+    font-size: 0.8rem;
+    color: var(--color-texto-claro);
+}
+
+.palabra-asignada strong {
+    color: var(--color-acento);
+}
+
+/* ============================================
+ * Páginas
+ * ============================================ */
+
+.pagina {
+    display: none;
+    flex: 1;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.pagina.activa {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+ * Sección de Búsqueda
+ * ============================================ */
+
+.search-section {
+    margin-bottom: 2rem;
+}
+
+.search-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: left;
+    color: var(--color-texto);
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-borde);
+    padding-bottom: 0.5rem;
+}
+
+.search-filters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+}
+
+/* ============================================
+ * Botones
+ * ============================================ */
+
+.btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    cursor: pointer;
+    transition: var(--transicion);
+    font-weight: 600;
+    background-color: var(--color-tarjeta);
+    color: var(--color-texto);
+}
+
+.btn:hover {
+    background-color: var(--color-fondo);
+    border-color: var(--color-acento);
+}
+
+.btn-search {
+    background-color: var(--color-tarjeta);
+    color: var(--color-texto);
+    border: 1px solid var(--color-borde);
+}
+
+.btn-search:hover {
+    background-color: var(--color-fondo);
+    border-color: var(--color-acento);
+}
+
+.btn-special {
+    background-color: var(--color-tarjeta);
+    color: var(--color-texto);
+    border: 1px solid var(--color-borde);
+    grid-column: 1 / -1;
+}
+
+.btn-special:hover {
+    background-color: var(--color-fondo);
+    border-color: var(--color-acento);
+}
+
+.btn-back {
+    background-color: var(--color-tarjeta);
+    color: var(--color-texto);
+    border: 1px solid var(--color-borde);
+    padding: 0.7rem 1rem;
+    border-radius: var(--radio);
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transicion);
+}
+
+.btn-back:hover {
+    background-color: var(--color-fondo);
+    border-color: var(--color-acento);
+}
+
+/* ============================================
+ * Contenedor de Resultados
+ * ============================================ */
+
+.contenedor-resultados {
+    min-height: 250px;
+    animation: fadeIn 0.3s ease;
+}
+
+.mensaje-inicial {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--color-texto-claro);
+    padding: 2rem;
+}
+
+.titulo-seccion {
+    text-align: left;
+    margin-bottom: 1.2rem;
+    color: var(--color-texto);
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-borde);
+    padding-bottom: 0.5rem;
+}
+
+/* ============================================
+ * Tarjetas de películas
+ * ============================================ */
+
+.tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.tarjeta {
+    background-color: var(--color-tarjeta);
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    transition: var(--transicion);
+    cursor: pointer;
+    border: 1px solid var(--color-borde);
+}
+
+.tarjeta:hover {
+    box-shadow: var(--sombra-fuerte);
+    border-color: var(--color-acento);
+    transform: translateY(-2px);
+}
+
+.tarjeta img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: var(--transicion);
+}
+
+.tarjeta:hover img {
+    opacity: 0.9;
+}
+
+.tarjeta-imagen {
+    width: 100%;
+    height: 200px;
+    background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imagen-no-disponible {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    border: 1px solid var(--color-borde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-texto-claro);
+    padding: 1rem;
+    font-weight: 500;
+}
+
+.tarjeta .info {
+    padding: 0.7rem;
+}
+
+.tarjeta h3 {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    color: var(--color-texto);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.tarjeta p {
+    font-size: 0.7rem;
+    color: var(--color-texto-claro);
+    margin-bottom: 0.2rem;
+}
+
+/* ============================================
+ * Vista de Detalle
+ * ============================================ */
+
+.detalle-container {
+    animation: fadeIn 0.3s ease;
+}
+
+.detalle-contenido {
+    background-color: var(--color-tarjeta);
+    border-radius: var(--radio);
+    padding: 1.5rem;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--color-borde);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.detalle-contenido img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-fuerte);
+    margin: 0 auto;
+}
+
+.detalle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.detalle-info h2 {
+    font-size: 1.4rem;
+    color: var(--color-texto);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.detalle-info .rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.stars {
+    color: #999999;
+}
+
+.detalle-poster {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 2/3;
+    background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    margin: 0 auto;
+}
+
+.detalle-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imagen-no-disponible-detalle {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-texto-claro);
+    padding: 1.5rem;
+    font-weight: 500;
+}
+
+.detalle-info p {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.detalle-info strong {
+    color: var(--color-texto-claro);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.detalle-info em {
+    color: var(--color-texto);
+    font-style: normal;
+}
+
+.plot {
+    background-color: #f8f8f8;
+    padding: 0.8rem;
+    border-radius: var(--radio);
+    border-left: 3px solid var(--color-acento);
+    margin-top: 0.8rem;
+}
+
+/* ============================================
+ * Indicador de Carga
+ * ============================================ */
+
+.carga {
+    text-align: center;
+    padding: 2rem;
+}
+
+.spinner {
+    border: 3px solid #e0e0e0;
+    border-top: 3px solid #666666;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.carga p {
+    color: var(--color-texto-claro);
+    font-size: 0.9rem;
+}
+
+/* ============================================
+ * Mensajes de Error
+ * ============================================ */
+
+.error {
+    background-color: #f5f5f5;
+    border-left: 3px solid #999999;
+    padding: 1.2rem;
+    border-radius: var(--radio);
+    color: #333333;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+ * Pie de página
+ * ============================================ */
+
+footer {
+    background-color: var(--color-primario);
+    border-top: 1px solid var(--color-borde);
+    padding: 1rem;
+    text-align: center;
+    color: var(--color-texto-claro);
+    font-size: 0.75rem;
+    margin-top: auto;
+}
+
+footer a {
+    color: var(--color-acento);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+ * Responsive - Tablet y Desktop
+ * ============================================ */
+
+@media (min-width: 768px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    header {
+        padding: 1rem;
+        padding-left: 1rem;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .overlay {
+        display: none;
+    }
+
+    .search-filters {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .tarjetas {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .tarjeta img,
+    .tarjeta-imagen {
+        height: 240px;
+    }
+
+    .detalle-contenido {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .detalle-contenido img {
+        width: 250px;
+        height: 375px;
+        margin: 0;
+    }
+
+    .detalle-poster {
+        max-width: none;
+        margin: 0;
+    }
+
+    .detalle-info h2 {
+        text-align: left;
+    }
+
+    .detalle-info .rating {
+        justify-content: flex-start;
+    }
+
+    .pagina {
+        padding: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .tarjetas {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .tarjeta img,
+    .tarjeta-imagen {
+        height: 280px;
+    }
+}

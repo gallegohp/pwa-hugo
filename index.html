@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OMDb Movie Explorer - Mankind - Explora películas de la base de datos OMDb">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>OMDb Movie Explorer - Mankind</title>
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Botón Menú Hamburguesa -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay oscuro para cerrar menú -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar / Menú Lateral -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Mankind</h2>
+            <button class="close-menu" id="closeMenu" aria-label="Cerrar menú">×</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="buscarTodas(); cerrarMenu();">Todas las películas</a></li>
+            <li class="menu-section">Buscar por década</li>
+            <li><a href="#" onclick="buscarPorDecada(1950); cerrarMenu();">1950s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(1960); cerrarMenu();">1960s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(1970); cerrarMenu();">1970s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(1980); cerrarMenu();">1980s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(1990); cerrarMenu();">1990s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(2000); cerrarMenu();">2000s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(2010); cerrarMenu();">2010s</a></li>
+            <li><a href="#" onclick="buscarPorDecada(2020); cerrarMenu();">2020s</a></li>
+            <li class="menu-section">Clasificación IMDb</li>
+            <li><a href="#" onclick="buscarPorClasificacion(8, 10); cerrarMenu();">8.0 - 10.0</a></li>
+            <li><a href="#" onclick="buscarPorClasificacion(6, 7.9); cerrarMenu();">6.0 - 7.9</a></li>
+            <li><a href="#" onclick="buscarPorClasificacion(4, 5.9); cerrarMenu();">4.0 - 5.9</a></li>
+            <li><a href="#" onclick="buscarPorClasificacion(0, 3.9); cerrarMenu();">Menores</a></li>
+            <li class="menu-section">Género</li>
+            <li><a href="#" onclick="buscarPorGenero('Action'); cerrarMenu();">Acción</a></li>
+            <li><a href="#" onclick="buscarPorGenero('Drama'); cerrarMenu();">Drama</a></li>
+            <li><a href="#" onclick="buscarPorGenero('Thriller'); cerrarMenu();">Thriller</a></li>
+            <li><a href="#" onclick="buscarPorGenero('Documentary'); cerrarMenu();">Documental</a></li>
+            <li><a href="#" onclick="buscarPorGenero('Comedy'); cerrarMenu();">Comedia</a></li>
+            <li><a href="#" onclick="buscarPorGenero('Adventure'); cerrarMenu();">Aventura</a></li>
+        </ul>
+    </nav>
+
+    <!-- Encabezado principal -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <h1>Mankind</h1>
+                <p class="palabra-asignada">Base de datos: <strong>OMDb Movie Database</strong></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Página de Búsqueda -->
+    <main id="pagina-busqueda" class="pagina activa">
+        <div class="search-section">
+            <h2>Búsqueda por décadas</h2>
+            <div class="search-filters">
+                <button class="btn btn-search" onclick="buscarPorDecada(1950)">1950s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(1960)">1960s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(1970)">1970s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(1980)">1980s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(1990)">1990s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(2000)">2000s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(2010)">2010s</button>
+                <button class="btn btn-search" onclick="buscarPorDecada(2020)">2020s</button>
+                <button class="btn btn-special" onclick="buscarTodas()">Ver todas</button>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <h2>Filtro por clasificación (IMDb)</h2>
+            <div class="search-filters">
+                <button class="btn btn-search" onclick="buscarPorClasificacion(8, 10)">8.0 - 10.0</button>
+                <button class="btn btn-search" onclick="buscarPorClasificacion(6, 7.9)">6.0 - 7.9</button>
+                <button class="btn btn-search" onclick="buscarPorClasificacion(4, 5.9)">4.0 - 5.9</button>
+                <button class="btn btn-search" onclick="buscarPorClasificacion(0, 3.9)">Menores</button>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <h2>Filtro por género</h2>
+            <div class="search-filters">
+                <button class="btn btn-search" onclick="buscarPorGenero('Action')">Acción</button>
+                <button class="btn btn-search" onclick="buscarPorGenero('Drama')">Drama</button>
+                <button class="btn btn-search" onclick="buscarPorGenero('Thriller')">Thriller</button>
+                <button class="btn btn-search" onclick="buscarPorGenero('Documentary')">Documental</button>
+                <button class="btn btn-search" onclick="buscarPorGenero('Comedy')">Comedia</button>
+                <button class="btn btn-search" onclick="buscarPorGenero('Adventure')">Aventura</button>
+            </div>
+        </div>
+
+        <div id="resultados" class="contenedor-resultados">
+            <p class="mensaje-inicial">Selecciona un filtro para buscar películas</p>
+        </div>
+    </main>
+
+    <!-- Página de Detalle -->
+    <main id="pagina-detalle" class="pagina">
+        <div class="detalle-container">
+            <button class="btn-back" onclick="volverABusqueda()">← Volver</button>
+            <div id="detalle-contenido" class="detalle-contenido">
+                <!-- El detalle de la película se carga aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>OMDb Movie Explorer - Palabra asignada: <strong>Mankind</strong></p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        // ============================================
+        // Funciones del Menú Hamburguesa
+        // ============================================
+        
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const closeMenu = document.getElementById('closeMenu');
+
+        function abrirMenu() {
+            sidebar.classList.add('abierta');
+            overlay.classList.add('activa');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarMenu() {
+            sidebar.classList.remove('abierta');
+            overlay.classList.remove('activa');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', abrirMenu);
+        closeMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+
+        // Cerrar menú con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarMenu();
+            }
+        });
+
+        // ============================================
+        // Registro del Service Worker (PWA)
+        // ============================================
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('SW registrado:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Error al registrar SW:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
