@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="OMDb Movie Explorer - Mankind - Explora películas de la base de datos OMDb">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>OMDb Movie Explorer - Mankind</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Mankind · Movie Explorer</title>
     
-    <!-- Manifest PWA -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
-    <!-- Google Fonts: Inter -->
+    <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,150 +23,162 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Botón Menú Hamburguesa -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
 
-    <!-- Overlay oscuro para cerrar menú -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Sidebar / Menú Lateral -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Mankind</h2>
-            <button class="close-menu" id="closeMenu" aria-label="Cerrar menú">×</button>
+    <!-- Application Header -->
+    <header id="app-header">
+        <div class="header-inner">
+            <div class="header-brand">
+                <span class="brand-icon">🎬</span>
+                <div>
+                    <h1>Mankind</h1>
+                    <p class="brand-sub">OMDb Movie Database</p>
+                </div>
+            </div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="#" onclick="buscarTodas(); cerrarMenu();">Todas las películas</a></li>
-            <li class="menu-section">Buscar por década</li>
-            <li><a href="#" onclick="buscarPorDecada(1950); cerrarMenu();">1950s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(1960); cerrarMenu();">1960s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(1970); cerrarMenu();">1970s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(1980); cerrarMenu();">1980s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(1990); cerrarMenu();">1990s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(2000); cerrarMenu();">2000s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(2010); cerrarMenu();">2010s</a></li>
-            <li><a href="#" onclick="buscarPorDecada(2020); cerrarMenu();">2020s</a></li>
-            <li class="menu-section">Clasificación IMDb</li>
-            <li><a href="#" onclick="buscarPorClasificacion(8, 10); cerrarMenu();">8.0 - 10.0</a></li>
-            <li><a href="#" onclick="buscarPorClasificacion(6, 7.9); cerrarMenu();">6.0 - 7.9</a></li>
-            <li><a href="#" onclick="buscarPorClasificacion(4, 5.9); cerrarMenu();">4.0 - 5.9</a></li>
-            <li><a href="#" onclick="buscarPorClasificacion(0, 3.9); cerrarMenu();">Menores</a></li>
-            <li class="menu-section">Género</li>
-            <li><a href="#" onclick="buscarPorGenero('Action'); cerrarMenu();">Acción</a></li>
-            <li><a href="#" onclick="buscarPorGenero('Drama'); cerrarMenu();">Drama</a></li>
-            <li><a href="#" onclick="buscarPorGenero('Thriller'); cerrarMenu();">Thriller</a></li>
-            <li><a href="#" onclick="buscarPorGenero('Documentary'); cerrarMenu();">Documental</a></li>
-            <li><a href="#" onclick="buscarPorGenero('Comedy'); cerrarMenu();">Comedia</a></li>
-            <li><a href="#" onclick="buscarPorGenero('Adventure'); cerrarMenu();">Aventura</a></li>
-        </ul>
-    </nav>
 
-    <!-- Encabezado principal -->
-    <header>
-        <div class="header-container">
-            <div class="logo-section">
-                <h1>Mankind</h1>
-                <p class="palabra-asignada">Base de datos: <strong>OMDb Movie Database</strong></p>
+        <!-- Filter Controls -->
+        <div class="filters-bar">
+            
+            <button class="filter-pill active" id="btn-todas" onclick="buscarTodas(); setActiveGlobal(this)">
+                Todas
+            </button>
+
+            <div class="filter-dropdown" id="drop-tipo">
+                <button class="filter-pill has-arrow" onclick="toggleDropdown('drop-tipo')">
+                    Tipo <span class="arrow">▾</span>
+                </button>
+                <div class="dropdown-menu">
+                    <button onclick="buscarPorTipo('movie'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">🎬 Películas</button>
+                    <button onclick="buscarPorTipo('series'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">📺 Series</button>
+                </div>
+            </div>
+
+            <div class="filter-dropdown" id="drop-decadas">
+                <button class="filter-pill has-arrow" onclick="toggleDropdown('drop-decadas')">
+                    Década <span class="arrow">▾</span>
+                </button>
+                <div class="dropdown-menu">
+                    <button onclick="buscarPorDecada(1950); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1950s</button>
+                    <button onclick="buscarPorDecada(1960); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1960s</button>
+                    <button onclick="buscarPorDecada(1970); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1970s</button>
+                    <button onclick="buscarPorDecada(1980); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1980s</button>
+                    <button onclick="buscarPorDecada(1990); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1990s</button>
+                    <button onclick="buscarPorDecada(2000); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2000s</button>
+                    <button onclick="buscarPorDecada(2010); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2010s</button>
+                    <button onclick="buscarPorDecada(2020); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2020s</button>
+                </div>
+            </div>
+
+            <div class="filter-dropdown" id="drop-rating">
+                <button class="filter-pill has-arrow" onclick="toggleDropdown('drop-rating')">
+                    Rating <span class="arrow">▾</span>
+                </button>
+                <div class="dropdown-menu">
+                    <button onclick="buscarPorClasificacion(8, 10); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 8 – 10</button>
+                    <button onclick="buscarPorClasificacion(6, 7.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 6 – 7.9</button>
+                    <button onclick="buscarPorClasificacion(4, 5.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 4 – 5.9</button>
+                    <button onclick="buscarPorClasificacion(0, 3.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ Menos de 4</button>
+                </div>
+            </div>
+
+            <div class="filter-dropdown" id="drop-genero">
+                <button class="filter-pill has-arrow" onclick="toggleDropdown('drop-genero')">
+                    Género <span class="arrow">▾</span>
+                </button>
+                <div class="dropdown-menu">
+                    <button onclick="buscarPorGenero('Action'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Acción</button>
+                    <button onclick="buscarPorGenero('Drama'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Drama</button>
+                    <button onclick="buscarPorGenero('Thriller'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Thriller</button>
+                    <button onclick="buscarPorGenero('Comedy'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Comedia</button>
+                    <button onclick="buscarPorGenero('Documentary'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Documental</button>
+                    <button onclick="buscarPorGenero('Adventure'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Aventura</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Página de Búsqueda -->
+    <!-- Search View -->
     <main id="pagina-busqueda" class="pagina activa">
-        <div class="filter-section">
-            <div class="filter-scroll-wrapper">
-                <button class="filter-tag active" onclick="buscarTodas(); setActiveFilter(this)">Todas</button>
-                
-                <!-- Décadas -->
-                <button class="filter-tag" onclick="buscarPorDecada(1980); setActiveFilter(this)">80s</button>
-                <button class="filter-tag" onclick="buscarPorDecada(1990); setActiveFilter(this)">90s</button>
-                <button class="filter-tag" onclick="buscarPorDecada(2000); setActiveFilter(this)">00s</button>
-                <button class="filter-tag" onclick="buscarPorDecada(2010); setActiveFilter(this)">10s</button>
-                <button class="filter-tag" onclick="buscarPorDecada(2020); setActiveFilter(this)">20s</button>
-                
-                <!-- Clasificación -->
-                <button class="filter-tag" onclick="buscarPorClasificacion(8, 10); setActiveFilter(this)">⭐️ 8+</button>
-                <button class="filter-tag" onclick="buscarPorClasificacion(6, 7.9); setActiveFilter(this)">⭐️ 6-8</button>
-                
-                <!-- Géneros -->
-                <button class="filter-tag" onclick="buscarPorGenero('Action'); setActiveFilter(this)">Acción</button>
-                <button class="filter-tag" onclick="buscarPorGenero('Drama'); setActiveFilter(this)">Drama</button>
-                <button class="filter-tag" onclick="buscarPorGenero('Thriller'); setActiveFilter(this)">Thriller</button>
-                <button class="filter-tag" onclick="buscarPorGenero('Comedy'); setActiveFilter(this)">Comedia</button>
-                <button class="filter-tag" onclick="buscarPorGenero('Documentary'); setActiveFilter(this)">Documental</button>
-            </div>
-        </div>
-
         <div id="resultados" class="contenedor-resultados">
-            <p class="mensaje-inicial">Selecciona un filtro para buscar películas</p>
+            <div class="carga">
+                <div class="spinner"></div>
+                <p>Cargando películas...</p>
+            </div>
         </div>
     </main>
 
-    <!-- Página de Detalle -->
+    <!-- Detail View -->
     <main id="pagina-detalle" class="pagina">
         <div class="detalle-container">
             <button class="btn-back" onclick="volverABusqueda()">← Volver</button>
             <div id="detalle-contenido" class="detalle-contenido">
-                <!-- El detalle de la película se carga aquí -->
             </div>
         </div>
     </main>
 
-    <!-- Pie de página -->
+    <!-- Footer -->
     <footer>
-        <p>OMDb Movie Explorer - Palabra asignada: <strong>Mankind</strong></p>
+        <p>Mankind · OMDb Movie Explorer</p>
     </footer>
 
     <script src="js/app.js"></script>
     <script>
-        // ============================================
-        // Funciones del Menú Hamburguesa
-        // ============================================
-        
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeMenu = document.getElementById('closeMenu');
-
-        function abrirMenu() {
-            sidebar.classList.add('abierta');
-            overlay.classList.add('activa');
-            document.body.style.overflow = 'hidden';
+        /**
+         * Toggles the visibility of a dropdown menu.
+         * @param {string} id - The ID of the dropdown container.
+         */
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const isOpen = dropdown.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) {
+                dropdown.classList.add('open');
+            }
         }
 
-        function cerrarMenu() {
-            sidebar.classList.remove('abierta');
-            overlay.classList.remove('activa');
-            document.body.style.overflow = '';
+        /**
+         * Closes all open dropdown menus.
+         */
+        function closeAllDropdowns() {
+            document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
         }
 
-        menuToggle.addEventListener('click', abrirMenu);
-        closeMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-
-        // Cerrar menú con tecla Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                cerrarMenu();
+        /**
+         * Event listener to close dropdowns when clicking outside.
+         */
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.filter-dropdown') && !e.target.closest('.filter-pill')) {
+                closeAllDropdowns();
             }
         });
 
-        // ============================================
-        // Registro del Service Worker (PWA)
-        // ============================================
-        
+        /**
+         * Event listener to close dropdowns on Escape key press.
+         */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAllDropdowns();
+        });
+
+        /**
+         * Sets the active visual state for the selected filter pill.
+         * @param {HTMLElement} btn - The button element to set as active.
+         */
+        function setActiveGlobal(btn) {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        /**
+         * Service Worker registration for PWA capabilities.
+         */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => {
-                        console.log('SW registrado:', registration.scope);
+                        console.log('SW registered:', registration.scope);
                     })
                     .catch(error => {
-                        console.log('Error al registrar SW:', error);
+                        console.log('SW registration failed:', error);
                     });
             });
         }
