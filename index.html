@@ -56,7 +56,7 @@
         <!-- Controles de Filtros -->
         <div class="filters-bar">
             
-            <button class="filter-pill active" id="btn-todas" onclick="buscarTodas(); setActiveGlobal(this)">
+            <button class="filter-pill active" id="btn-todas" onclick="limpiarFiltrosYBuscar(); resetAllVisualFilters()">
                 Todas
             </button>
 
@@ -65,8 +65,8 @@
                     Tipo <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorTipo('movie'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">Películas</button>
-                    <button onclick="buscarPorTipo('series'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">Series</button>
+                    <button onclick="setFiltroTipo('movie'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-tipo .filter-pill'))">Películas</button>
+                    <button onclick="setFiltroTipo('series'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-tipo .filter-pill'))">Series</button>
                 </div>
             </div>
 
@@ -75,14 +75,14 @@
                     Década <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorDecada(1950); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1950s</button>
-                    <button onclick="buscarPorDecada(1960); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1960s</button>
-                    <button onclick="buscarPorDecada(1970); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1970s</button>
-                    <button onclick="buscarPorDecada(1980); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1980s</button>
-                    <button onclick="buscarPorDecada(1990); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">1990s</button>
-                    <button onclick="buscarPorDecada(2000); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2000s</button>
-                    <button onclick="buscarPorDecada(2010); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2010s</button>
-                    <button onclick="buscarPorDecada(2020); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-decadas .filter-pill'))">2020s</button>
+                    <button onclick="setFiltroDecada(1950); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">1950s</button>
+                    <button onclick="setFiltroDecada(1960); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">1960s</button>
+                    <button onclick="setFiltroDecada(1970); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">1970s</button>
+                    <button onclick="setFiltroDecada(1980); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">1980s</button>
+                    <button onclick="setFiltroDecada(1990); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">1990s</button>
+                    <button onclick="setFiltroDecada(2000); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">2000s</button>
+                    <button onclick="setFiltroDecada(2010); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">2010s</button>
+                    <button onclick="setFiltroDecada(2020); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-decadas .filter-pill'))">2020s</button>
                 </div>
             </div>
 
@@ -91,10 +91,10 @@
                     Rating <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorClasificacion(8, 10); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">8.0 – 10.0</button>
-                    <button onclick="buscarPorClasificacion(6, 7.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">6.0 – 7.9</button>
-                    <button onclick="buscarPorClasificacion(4, 5.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">4.0 – 5.9</button>
-                    <button onclick="buscarPorClasificacion(0, 3.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">Menos de 4.0</button>
+                    <button onclick="setFiltroClasificacion(8, 10); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-rating .filter-pill'))">8.0 – 10.0</button>
+                    <button onclick="setFiltroClasificacion(6, 7.9); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-rating .filter-pill'))">6.0 – 7.9</button>
+                    <button onclick="setFiltroClasificacion(4, 5.9); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-rating .filter-pill'))">4.0 – 5.9</button>
+                    <button onclick="setFiltroClasificacion(0, 3.9); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-rating .filter-pill'))">Menos de 4.0</button>
                 </div>
             </div>
 
@@ -103,12 +103,12 @@
                     Género <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorGenero('Action'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Acción</button>
-                    <button onclick="buscarPorGenero('Drama'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Drama</button>
-                    <button onclick="buscarPorGenero('Thriller'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Thriller</button>
-                    <button onclick="buscarPorGenero('Comedy'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Comedia</button>
-                    <button onclick="buscarPorGenero('Documentary'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Documental</button>
-                    <button onclick="buscarPorGenero('Adventure'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-genero .filter-pill'))">Aventura</button>
+                    <button onclick="setFiltroGenero('Action'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Acción</button>
+                    <button onclick="setFiltroGenero('Drama'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Drama</button>
+                    <button onclick="setFiltroGenero('Thriller'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Thriller</button>
+                    <button onclick="setFiltroGenero('Comedy'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Comedia</button>
+                    <button onclick="setFiltroGenero('Documentary'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Documental</button>
+                    <button onclick="setFiltroGenero('Adventure'); closeAllDropdowns(); setActiveInGroup(document.querySelector('#drop-genero .filter-pill'))">Aventura</button>
                 </div>
             </div>
         </div>
@@ -177,12 +177,21 @@
         });
 
         /**
-         * Establece el estado visual activo para el filtro seleccionado.
-         * @param {HTMLElement} btn - El elemento del botón que se marcará como activo.
+         * Marca un botón desplegable como activo sin apagar los demás.
+         * Apaga el botón de "Todas" ya que ahora hay filtros específicos.
+         * @param {HTMLElement} btn - El botón del filtro a activar.
          */
-        function setActiveGlobal(btn) {
-            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        function setActiveInGroup(btn) {
+            document.getElementById('btn-todas').classList.remove('active');
             if (btn) btn.classList.add('active');
+        }
+
+        /**
+         * Reinicia los botones de filtros al estado inicial (solo "Todas" activo).
+         */
+        function resetAllVisualFilters() {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            document.getElementById('btn-todas').classList.add('active');
         }
 
         /**

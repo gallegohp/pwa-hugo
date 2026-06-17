@@ -1,6 +1,7 @@
 /**
  * Script Principal - Mankind OMDb Movie Explorer
  * Gestiona la obtención de datos desde la API de OMDb, la renderización de componentes de interfaz y el estado de la aplicación.
+ * Implementa Filtrado Múltiple Acumulativo.
  */
 
 const API_KEY = "6e67aaff";
@@ -8,7 +9,21 @@ const BASE_URL = "https://www.omdbapi.com/";
 const PALABRA_ASIGNADA = "Mankind";
 
 let peliculaActual = null;
-let tipoActual = "";
+
+/**
+ * Estado global que almacena todos los filtros activos simultáneamente.
+ */
+let estadoFiltros = {
+    tipo: "",       // "movie" o "series"
+    decada: null,   // ej. 1980
+    minRating: null, // ej. 8
+    maxRating: null, // ej. 10
+    genero: ""      // ej. "Action"
+};
+
+// ============================================
+// Funciones de Navegación entre Páginas
+// ============================================
 
 /**
  * Transiciona la vista actual hacia la página principal de búsqueda.
@@ -35,129 +50,101 @@ function volverABusqueda() {
     mostrarPaginaBusqueda();
 }
 
+// ============================================
+// Lógica de Filtro Múltiple
+// ============================================
+
 /**
- * Obtiene y muestra las películas o series estrenadas dentro de una década específica.
- * @param {number} decada - El año de inicio de la década (por ejemplo, 1980).
+ * Función central que obtiene los datos base y aplica secuencialmente todos los filtros activos.
  */
-async function buscarPorDecada(decada) {
-    const desde = decada;
-    const hasta = decada + 9;
-    const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
-    const tipoLabel = tipoActual === "series" ? "series" : "películas";
+async function aplicarFiltrosCombinados() {
+    // 1. Mostrar mensaje de carga genérico
+    mostrarCarga(`Aplicando filtros y buscando resultados para "${PALABRA_ASIGNADA}"...`);
+
+    // Construimos los parámetros de la API para el tipo si está definido
+    const tipoParam = estadoFiltros.tipo ? `&type=${estadoFiltros.tipo}` : "";
 
     try {
-        mostrarCarga(`Cargando ${tipoLabel} de "${PALABRA_ASIGNADA}" de los ${desde}s...`);
-
+        // 2. Obtener resultados base de la API (por palabra clave y tipo)
         const respuesta = await fetch(`${BASE_URL}?s=${PALABRA_ASIGNADA}${tipoParam}&apikey=${API_KEY}`);
         const data = await respuesta.json();
 
         if (!validarRespuesta(data)) {
-            mostrarError(`No se encontraron ${tipoLabel} de "${PALABRA_ASIGNADA}" en los ${desde}s.`);
+            mostrarErrorCombinado();
             return;
         }
 
-        const peliculasFiltradas = data.Search.filter(pelicula => {
-            const year = parseInt(pelicula.Year);
-            return year >= desde && year <= hasta;
-        });
+        let peliculasFiltradas = data.Search;
 
+        // 3. Filtrar por Década (Filtro Local Rápido)
+        if (estadoFiltros.decada) {
+            const desde = estadoFiltros.decada;
+            const hasta = estadoFiltros.decada + 9;
+            peliculasFiltradas = peliculasFiltradas.filter(pelicula => {
+                const year = parseInt(pelicula.Year);
+                return year >= desde && year <= hasta;
+            });
+        }
+
+        // Si después de la década no hay nada, detenernos
         if (peliculasFiltradas.length === 0) {
-            mostrarError(`No se encontraron ${tipoLabel} de "${PALABRA_ASIGNADA}" en los ${desde}s.`);
+            mostrarErrorCombinado();
             return;
         }
 
-        mostrarResultados(peliculasFiltradas, `${tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1)} de "${PALABRA_ASIGNADA}" - Década ${desde}s`);
+        // 4. Si hay filtros de Rating o Género, necesitamos detalles individuales de cada película resultante
+        if (estadoFiltros.minRating !== null || estadoFiltros.genero !== "") {
+            mostrarCarga(`Obteniendo detalles adicionales para aplicar filtros avanzados...`);
+            
+            const peliculasConDetalle = await Promise.all(
+                peliculasFiltradas.map(async (pelicula) => {
+                    try {
+                        const respuestaDetalle = await fetch(`${BASE_URL}?i=${pelicula.imdbID}&apikey=${API_KEY}`);
+                        return await respuestaDetalle.json();
+                    } catch (e) {
+                        return null;
+                    }
+                })
+            );
 
-    } catch (error) {
-        mostrarError("Error de conexión: " + error.message);
-    }
-}
+            // Filtrar por Rating
+            if (estadoFiltros.minRating !== null) {
+                peliculasFiltradas = peliculasConDetalle.filter(pelicula => {
+                    if (!pelicula || pelicula.Response === "False") return false;
+                    const rating = parseFloat(pelicula.imdbRating);
+                    return !isNaN(rating) && rating >= estadoFiltros.minRating && rating <= estadoFiltros.maxRating;
+                });
+            } else {
+                // Si solo había género pero no rating, usar los detalles igual
+                peliculasFiltradas = peliculasConDetalle.filter(p => p && p.Response !== "False");
+            }
 
-/**
- * Obtiene y muestra todas las películas o series que coinciden con la palabra asignada.
- */
-async function buscarTodas() {
-    const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
-    const tipoLabel = tipoActual === "series" ? "series" : tipoActual === "movie" ? "películas" : "resultados";
-
-    try {
-        mostrarCarga(`Cargando todos los ${tipoLabel} de "${PALABRA_ASIGNADA}"...`);
-
-        const respuesta = await fetch(`${BASE_URL}?s=${PALABRA_ASIGNADA}${tipoParam}&apikey=${API_KEY}`);
-        const data = await respuesta.json();
-
-        if (!validarRespuesta(data)) {
-            mostrarError(`No se encontraron ${tipoLabel} de "${PALABRA_ASIGNADA}".`);
-            return;
+            // Filtrar por Género
+            if (estadoFiltros.genero !== "") {
+                peliculasFiltradas = peliculasFiltradas.filter(pelicula => {
+                    const generos = pelicula.Genre ? pelicula.Genre.split(',').map(g => g.trim().toLowerCase()) : [];
+                    return generos.includes(estadoFiltros.genero.toLowerCase());
+                });
+            }
         }
 
-        const titulo = tipoActual === "series" 
-            ? `Todas las series de "${PALABRA_ASIGNADA}"` 
-            : tipoActual === "movie" 
-                ? `Todas las películas de "${PALABRA_ASIGNADA}"`
-                : `Todos los resultados de "${PALABRA_ASIGNADA}"`;
-
-        mostrarResultados(data.Search, titulo);
-
-    } catch (error) {
-        mostrarError("Error de conexión: " + error.message);
-    }
-}
-
-/**
- * Actualiza el tipo de búsqueda (película o serie) y activa una nueva consulta global.
- * @param {string} tipo - El tipo de contenido a buscar ("movie" o "series").
- */
-async function buscarPorTipo(tipo) {
-    tipoActual = tipo;
-    await buscarTodas();
-}
-
-/**
- * Obtiene y filtra resultados basándose en su calificación dentro de IMDb.
- * @param {number} minRating - La calificación mínima permitida.
- * @param {number} maxRating - La calificación máxima permitida.
- */
-async function buscarPorClasificacion(minRating, maxRating) {
-    const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
-    const tipoLabel = tipoActual === "series" ? "series" : "películas";
-
-    try {
-        mostrarCarga(`Cargando ${tipoLabel} de "${PALABRA_ASIGNADA}" con calificación ${minRating} - ${maxRating}...`);
-
-        const respuesta = await fetch(`${BASE_URL}?s=${PALABRA_ASIGNADA}${tipoParam}&apikey=${API_KEY}`);
-        const data = await respuesta.json();
-
-        if (!validarRespuesta(data)) {
-            mostrarError(`No se encontraron ${tipoLabel} de "${PALABRA_ASIGNADA}".`);
-            return;
-        }
-
-        const peliculasConRating = await Promise.all(
-            data.Search.map(async (pelicula) => {
-                try {
-                    const respuestaDetalle = await fetch(`${BASE_URL}?i=${pelicula.imdbID}&apikey=${API_KEY}`);
-                    const detalle = await respuestaDetalle.json();
-                    return detalle;
-                } catch (e) {
-                    return null;
-                }
-            })
-        );
-
-        const peliculasFiltradas = peliculasConRating.filter(pelicula => {
-            if (!pelicula || pelicula.Response === "False") return false;
-            const rating = parseFloat(pelicula.imdbRating);
-            return !isNaN(rating) && rating >= minRating && rating <= maxRating;
-        });
-
+        // 5. Verificar si quedaron resultados tras todos los filtros
         if (peliculasFiltradas.length === 0) {
-            mostrarError(`No se encontraron ${tipoLabel} con calificación ${minRating} - ${maxRating}.`);
+            mostrarErrorCombinado();
             return;
         }
 
-        const tipoTitulo = tipoActual === "series" ? "Series" : "Películas";
-        mostrarResultados(peliculasFiltradas, `${tipoTitulo} de "${PALABRA_ASIGNADA}" - Clasificación ${minRating} - ${maxRating}`);
+        // 6. Generar título dinámico según los filtros activos
+        let titulo = "Resultados";
+        if (estadoFiltros.tipo === "movie") titulo += " de Películas";
+        else if (estadoFiltros.tipo === "series") titulo += " de Series";
+        else titulo += " Generales";
+
+        if (estadoFiltros.decada) titulo += ` (${estadoFiltros.decada}s)`;
+        if (estadoFiltros.genero) titulo += ` • ${estadoFiltros.genero}`;
+        if (estadoFiltros.minRating !== null) titulo += ` • ⭐ ${estadoFiltros.minRating}-${estadoFiltros.maxRating}`;
+
+        mostrarResultados(peliculasFiltradas, titulo);
 
     } catch (error) {
         mostrarError("Error de conexión: " + error.message);
@@ -165,53 +152,72 @@ async function buscarPorClasificacion(minRating, maxRating) {
 }
 
 /**
- * Obtiene y filtra resultados basándose en un género específico.
- * @param {string} genero - El género a utilizar como filtro.
+ * Genera un mensaje de error amigable indicando la combinación que falló.
  */
-async function buscarPorGenero(genero) {
-    const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
-    const tipoLabel = tipoActual === "series" ? "series" : "películas";
-
-    try {
-        mostrarCarga(`Cargando ${tipoLabel} de "${PALABRA_ASIGNADA}" en género ${genero}...`);
-
-        const respuesta = await fetch(`${BASE_URL}?s=${PALABRA_ASIGNADA}${tipoParam}&apikey=${API_KEY}`);
-        const data = await respuesta.json();
-
-        if (!validarRespuesta(data)) {
-            mostrarError(`No se encontraron ${tipoLabel} de "${PALABRA_ASIGNADA}".`);
-            return;
-        }
-
-        const peliculasConGenero = await Promise.all(
-            data.Search.map(async (pelicula) => {
-                try {
-                    const respuestaDetalle = await fetch(`${BASE_URL}?i=${pelicula.imdbID}&apikey=${API_KEY}`);
-                    const detalle = await respuestaDetalle.json();
-                    return detalle;
-                } catch (e) {
-                    return null;
-                }
-            })
-        );
-
-        const peliculasFiltradas = peliculasConGenero.filter(pelicula => {
-            if (!pelicula || pelicula.Response === "False") return false;
-            const generos = pelicula.Genre ? pelicula.Genre.split(',').map(g => g.trim()) : [];
-            return generos.some(g => g.toLowerCase() === genero.toLowerCase());
-        });
-
-        if (peliculasFiltradas.length === 0) {
-            mostrarError(`No se encontraron ${tipoLabel} de género ${genero}.`);
-            return;
-        }
-
-        const tipoTitulo = tipoActual === "series" ? "Series" : "Películas";
-        mostrarResultados(peliculasFiltradas, `${tipoTitulo} de "${PALABRA_ASIGNADA}" - Género ${genero}`);
-
-    } catch (error) {
-        mostrarError("Error de conexión: " + error.message);
+function mostrarErrorCombinado() {
+    let mensaje = `No se encontraron resultados para "${PALABRA_ASIGNADA}" con los filtros actuales:<br><br>`;
+    
+    if (estadoFiltros.tipo) mensaje += `<b>Tipo:</b> ${estadoFiltros.tipo === "movie" ? "Película" : "Serie"}<br>`;
+    if (estadoFiltros.decada) mensaje += `<b>Década:</b> ${estadoFiltros.decada}s<br>`;
+    if (estadoFiltros.genero) mensaje += `<b>Género:</b> ${estadoFiltros.genero}<br>`;
+    if (estadoFiltros.minRating !== null) mensaje += `<b>Rating:</b> ${estadoFiltros.minRating} - ${estadoFiltros.maxRating}<br>`;
+    
+    if (mensaje.endsWith('<br><br>')) {
+        mensaje = `No se encontraron resultados en general para "${PALABRA_ASIGNADA}".`;
     }
+
+    mostrarError(mensaje);
+}
+
+// ============================================
+// Funciones Actualizadoras de Estado (Setters)
+// ============================================
+
+/**
+ * Limpia todos los filtros y vuelve a realizar la búsqueda principal.
+ */
+async function limpiarFiltrosYBuscar() {
+    estadoFiltros = {
+        tipo: "",
+        decada: null,
+        minRating: null,
+        maxRating: null,
+        genero: ""
+    };
+    await aplicarFiltrosCombinados();
+}
+
+/**
+ * Actualiza el tipo en el estado global y dispara la búsqueda.
+ */
+async function setFiltroTipo(tipo) {
+    estadoFiltros.tipo = tipo;
+    await aplicarFiltrosCombinados();
+}
+
+/**
+ * Actualiza la década en el estado global y dispara la búsqueda.
+ */
+async function setFiltroDecada(decada) {
+    estadoFiltros.decada = decada;
+    await aplicarFiltrosCombinados();
+}
+
+/**
+ * Actualiza el rating en el estado global y dispara la búsqueda.
+ */
+async function setFiltroClasificacion(min, max) {
+    estadoFiltros.minRating = min;
+    estadoFiltros.maxRating = max;
+    await aplicarFiltrosCombinados();
+}
+
+/**
+ * Actualiza el género en el estado global y dispara la búsqueda.
+ */
+async function setFiltroGenero(genero) {
+    estadoFiltros.genero = genero;
+    await aplicarFiltrosCombinados();
 }
 
 /**
@@ -220,13 +226,13 @@ async function buscarPorGenero(genero) {
  */
 async function buscarPorIDDirecto(imdbID) {
     try {
-        mostrarCarga(`Buscando película con ID: ${imdbID}...`);
+        mostrarCarga(`Buscando detalle de ID: ${imdbID}...`);
 
         const respuesta = await fetch(`${BASE_URL}?i=${imdbID}&apikey=${API_KEY}`);
         const data = await respuesta.json();
 
         if (!validarRespuesta(data)) {
-            mostrarError('No se encontró una película con ese ID en IMDb.');
+            mostrarError('No se encontró información con ese ID en IMDb.');
             return;
         }
 
@@ -237,6 +243,10 @@ async function buscarPorIDDirecto(imdbID) {
         mostrarError("Error de conexión: " + error.message);
     }
 }
+
+// ============================================
+// Funciones de Validación
+// ============================================
 
 /**
  * Valida el formato de la respuesta entregada por la API.
@@ -273,6 +283,10 @@ function obtenerEstrellas(rating) {
     const vacias = "○".repeat(5 - puntuacion);
     return llenas + " " + vacias;
 }
+
+// ============================================
+// Funciones de Presentación
+// ============================================
 
 /**
  * Renderiza un indicador visual de carga junto a un mensaje en el contenedor principal.
@@ -322,7 +336,7 @@ function mostrarResultados(peliculas, titulo) {
                 <div class="tarjeta-imagen">
                     ${tieneImagen ? 
                         `<img src="${posterUrl}" alt="${pelicula.Title}" onerror="this.parentElement.innerHTML='<div class=\\'imagen-no-disponible\\'>Imagen no disponible</div>'">` :
-                        `<div class="imagen-no-disponible">Imagen no disponible</div>`
+                        `<div class="imagen-no-disponible"></div>`
                     }
                 </div>
                 <div class="info">
@@ -395,12 +409,16 @@ function mostrarDetalle(pelicula) {
     contenedor.innerHTML = html;
 }
 
+// ============================================
+// Inicialización y Eventos Globales
+// ============================================
+
 /**
  * Inicia la configuración y carga inicial una vez que el árbol DOM está completamente formado.
  */
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    buscarTodas();
+    aplicarFiltrosCombinados(); // Usamos la nueva función central
 
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (themeToggleBtn) {
