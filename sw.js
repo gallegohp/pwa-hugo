@@ -4,7 +4,7 @@
  * y recurre a la memoria caché cuando no hay conexión a internet.
  */
 
-const CACHE_NAME = 'mankind-omdb-v5.0';
+const CACHE_NAME = 'mankind-omdb-v5.1';
 const urlsToCache = [
     './',
     './index.html',
