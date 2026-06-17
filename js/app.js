@@ -429,3 +429,18 @@ function mostrarDetalle(pelicula) {
     contenedor.innerHTML = html;
     contenedor.classList.add('detalle-contenido');
 }
+
+// ============================================
+// Funciones de UI y Carga Inicial
+// ============================================
+
+function setActiveFilter(btn) {
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+        tag.classList.remove('active');
+    });
+    btn.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    buscarTodas();
+});

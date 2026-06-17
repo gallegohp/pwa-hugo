@@ -15,6 +15,11 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -72,40 +77,27 @@
 
     <!-- Página de Búsqueda -->
     <main id="pagina-busqueda" class="pagina activa">
-        <div class="search-section">
-            <h2>Búsqueda por décadas</h2>
-            <div class="search-filters">
-                <button class="btn btn-search" onclick="buscarPorDecada(1950)">1950s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(1960)">1960s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(1970)">1970s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(1980)">1980s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(1990)">1990s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(2000)">2000s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(2010)">2010s</button>
-                <button class="btn btn-search" onclick="buscarPorDecada(2020)">2020s</button>
-                <button class="btn btn-special" onclick="buscarTodas()">Ver todas</button>
-            </div>
-        </div>
-
-        <div class="search-section">
-            <h2>Filtro por clasificación (IMDb)</h2>
-            <div class="search-filters">
-                <button class="btn btn-search" onclick="buscarPorClasificacion(8, 10)">8.0 - 10.0</button>
-                <button class="btn btn-search" onclick="buscarPorClasificacion(6, 7.9)">6.0 - 7.9</button>
-                <button class="btn btn-search" onclick="buscarPorClasificacion(4, 5.9)">4.0 - 5.9</button>
-                <button class="btn btn-search" onclick="buscarPorClasificacion(0, 3.9)">Menores</button>
-            </div>
-        </div>
-
-        <div class="search-section">
-            <h2>Filtro por género</h2>
-            <div class="search-filters">
-                <button class="btn btn-search" onclick="buscarPorGenero('Action')">Acción</button>
-                <button class="btn btn-search" onclick="buscarPorGenero('Drama')">Drama</button>
-                <button class="btn btn-search" onclick="buscarPorGenero('Thriller')">Thriller</button>
-                <button class="btn btn-search" onclick="buscarPorGenero('Documentary')">Documental</button>
-                <button class="btn btn-search" onclick="buscarPorGenero('Comedy')">Comedia</button>
-                <button class="btn btn-search" onclick="buscarPorGenero('Adventure')">Aventura</button>
+        <div class="filter-section">
+            <div class="filter-scroll-wrapper">
+                <button class="filter-tag active" onclick="buscarTodas(); setActiveFilter(this)">Todas</button>
+                
+                <!-- Décadas -->
+                <button class="filter-tag" onclick="buscarPorDecada(1980); setActiveFilter(this)">80s</button>
+                <button class="filter-tag" onclick="buscarPorDecada(1990); setActiveFilter(this)">90s</button>
+                <button class="filter-tag" onclick="buscarPorDecada(2000); setActiveFilter(this)">00s</button>
+                <button class="filter-tag" onclick="buscarPorDecada(2010); setActiveFilter(this)">10s</button>
+                <button class="filter-tag" onclick="buscarPorDecada(2020); setActiveFilter(this)">20s</button>
+                
+                <!-- Clasificación -->
+                <button class="filter-tag" onclick="buscarPorClasificacion(8, 10); setActiveFilter(this)">⭐️ 8+</button>
+                <button class="filter-tag" onclick="buscarPorClasificacion(6, 7.9); setActiveFilter(this)">⭐️ 6-8</button>
+                
+                <!-- Géneros -->
+                <button class="filter-tag" onclick="buscarPorGenero('Action'); setActiveFilter(this)">Acción</button>
+                <button class="filter-tag" onclick="buscarPorGenero('Drama'); setActiveFilter(this)">Drama</button>
+                <button class="filter-tag" onclick="buscarPorGenero('Thriller'); setActiveFilter(this)">Thriller</button>
+                <button class="filter-tag" onclick="buscarPorGenero('Comedy'); setActiveFilter(this)">Comedia</button>
+                <button class="filter-tag" onclick="buscarPorGenero('Documentary'); setActiveFilter(this)">Documental</button>
             </div>
         </div>
 
