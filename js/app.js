@@ -1,6 +1,6 @@
 /**
- * Mankind OMDb Movie Explorer Main Script
- * Handles fetching data from the OMDb API, rendering UI components, and state management.
+ * Script Principal - Mankind OMDb Movie Explorer
+ * Gestiona la obtención de datos desde la API de OMDb, la renderización de componentes de interfaz y el estado de la aplicación.
  */
 
 const API_KEY = "6e67aaff";
@@ -11,7 +11,7 @@ let peliculaActual = null;
 let tipoActual = "";
 
 /**
- * Transitions the view to the search page.
+ * Transiciona la vista actual hacia la página principal de búsqueda.
  */
 function mostrarPaginaBusqueda() {
     document.getElementById('pagina-busqueda').classList.add('activa');
@@ -20,7 +20,7 @@ function mostrarPaginaBusqueda() {
 }
 
 /**
- * Transitions the view to the detail page.
+ * Transiciona la vista actual hacia la página de detalle de la película o serie.
  */
 function mostrarPaginaDetalle() {
     document.getElementById('pagina-busqueda').classList.remove('activa');
@@ -29,15 +29,15 @@ function mostrarPaginaDetalle() {
 }
 
 /**
- * Navigates back to the search page from the detail view.
+ * Navega de regreso a la vista de búsqueda desde la vista de detalle.
  */
 function volverABusqueda() {
     mostrarPaginaBusqueda();
 }
 
 /**
- * Fetches and displays movies released within a specific decade.
- * @param {number} decada - The starting year of the decade (e.g., 1980).
+ * Obtiene y muestra las películas o series estrenadas dentro de una década específica.
+ * @param {number} decada - El año de inicio de la década (por ejemplo, 1980).
  */
 async function buscarPorDecada(decada) {
     const desde = decada;
@@ -74,7 +74,7 @@ async function buscarPorDecada(decada) {
 }
 
 /**
- * Fetches and displays all movies or series matching the assigned keyword.
+ * Obtiene y muestra todas las películas o series que coinciden con la palabra asignada.
  */
 async function buscarTodas() {
     const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
@@ -105,8 +105,8 @@ async function buscarTodas() {
 }
 
 /**
- * Updates the search type and triggers a global search.
- * @param {string} tipo - The type of content to search for ("movie" or "series").
+ * Actualiza el tipo de búsqueda (película o serie) y activa una nueva consulta global.
+ * @param {string} tipo - El tipo de contenido a buscar ("movie" o "series").
  */
 async function buscarPorTipo(tipo) {
     tipoActual = tipo;
@@ -114,16 +114,16 @@ async function buscarPorTipo(tipo) {
 }
 
 /**
- * Fetches and filters movies based on their IMDb rating.
- * @param {number} minRating - The minimum IMDb rating.
- * @param {number} maxRating - The maximum IMDb rating.
+ * Obtiene y filtra resultados basándose en su calificación dentro de IMDb.
+ * @param {number} minRating - La calificación mínima permitida.
+ * @param {number} maxRating - La calificación máxima permitida.
  */
 async function buscarPorClasificacion(minRating, maxRating) {
     const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
     const tipoLabel = tipoActual === "series" ? "series" : "películas";
 
     try {
-        mostrarCarga(`Cargando ${tipoLabel} de "${PALABRA_ASIGNADA}" con clasificación ${minRating} - ${maxRating}...`);
+        mostrarCarga(`Cargando ${tipoLabel} de "${PALABRA_ASIGNADA}" con calificación ${minRating} - ${maxRating}...`);
 
         const respuesta = await fetch(`${BASE_URL}?s=${PALABRA_ASIGNADA}${tipoParam}&apikey=${API_KEY}`);
         const data = await respuesta.json();
@@ -152,7 +152,7 @@ async function buscarPorClasificacion(minRating, maxRating) {
         });
 
         if (peliculasFiltradas.length === 0) {
-            mostrarError(`No se encontraron ${tipoLabel} con clasificación ${minRating} - ${maxRating}.`);
+            mostrarError(`No se encontraron ${tipoLabel} con calificación ${minRating} - ${maxRating}.`);
             return;
         }
 
@@ -165,8 +165,8 @@ async function buscarPorClasificacion(minRating, maxRating) {
 }
 
 /**
- * Fetches and filters movies based on a specific genre.
- * @param {string} genero - The genre to filter by.
+ * Obtiene y filtra resultados basándose en un género específico.
+ * @param {string} genero - El género a utilizar como filtro.
  */
 async function buscarPorGenero(genero) {
     const tipoParam = tipoActual ? `&type=${tipoActual}` : "";
@@ -215,8 +215,8 @@ async function buscarPorGenero(genero) {
 }
 
 /**
- * Fetches detail data for a specific IMDb ID and displays the detail view.
- * @param {string} imdbID - The IMDb ID of the movie or series.
+ * Obtiene los datos detallados utilizando un ID directo de IMDb y despliega la vista de detalle.
+ * @param {string} imdbID - El identificador único en IMDb.
  */
 async function buscarPorIDDirecto(imdbID) {
     try {
@@ -226,7 +226,7 @@ async function buscarPorIDDirecto(imdbID) {
         const data = await respuesta.json();
 
         if (!validarRespuesta(data)) {
-            mostrarError('No se encontró una película con ese ID IMDb.');
+            mostrarError('No se encontró una película con ese ID en IMDb.');
             return;
         }
 
@@ -239,9 +239,9 @@ async function buscarPorIDDirecto(imdbID) {
 }
 
 /**
- * Validates the API response format.
- * @param {Object} data - The raw API response payload.
- * @returns {boolean} True if the response is valid, otherwise false.
+ * Valida el formato de la respuesta entregada por la API.
+ * @param {Object} data - El objeto con los datos crudos retornados por la API.
+ * @returns {boolean} Verdadero si la respuesta es válida y contiene datos, falso en caso contrario.
  */
 function validarRespuesta(data) {
     if (data.Response === "False") return false;
@@ -250,9 +250,9 @@ function validarRespuesta(data) {
 }
 
 /**
- * Validates a poster URL, returning a fallback image if unavailable.
- * @param {string} poster - The poster URL to validate.
- * @returns {string} A valid image URL.
+ * Valida la URL de un póster y devuelve una imagen alternativa en caso de no estar disponible.
+ * @param {string} poster - La URL del póster a validar.
+ * @returns {string} Una URL válida hacia una imagen.
  */
 function validarPoster(poster) {
     if (!poster || poster === "N/A") {
@@ -262,9 +262,9 @@ function validarPoster(poster) {
 }
 
 /**
- * Generates a textual representation of a star rating.
- * @param {string} rating - The IMDb rating as a string.
- * @returns {string} The star representation string.
+ * Genera una representación gráfica de estrellas basada en la calificación numérica.
+ * @param {string} rating - La calificación de IMDb como cadena de texto.
+ * @returns {string} Una cadena de texto conteniendo las estrellas representativas.
  */
 function obtenerEstrellas(rating) {
     if (!rating || rating === "N/A") return "- - - - -";
@@ -275,8 +275,8 @@ function obtenerEstrellas(rating) {
 }
 
 /**
- * Renders a loading spinner and message in the results container.
- * @param {string} mensaje - The loading message to display.
+ * Renderiza un indicador visual de carga junto a un mensaje en el contenedor principal.
+ * @param {string} mensaje - El texto informativo de carga a mostrar.
  */
 function mostrarCarga(mensaje) {
     const contenedor = document.getElementById("resultados");
@@ -289,8 +289,8 @@ function mostrarCarga(mensaje) {
 }
 
 /**
- * Renders an error message in the results container.
- * @param {string} mensaje - The error message to display.
+ * Renderiza un mensaje de error en el contenedor de resultados principal.
+ * @param {string} mensaje - El mensaje de error a mostrar.
  */
 function mostrarError(mensaje) {
     const contenedor = document.getElementById("resultados");
@@ -302,9 +302,9 @@ function mostrarError(mensaje) {
 }
 
 /**
- * Renders the search results as a grid of movie cards.
- * @param {Array} peliculas - The array of movie objects to render.
- * @param {string} titulo - The title for the results section.
+ * Renderiza los resultados de búsqueda como una cuadrícula de tarjetas de contenido.
+ * @param {Array} peliculas - El arreglo de objetos que representan las películas obtenidas.
+ * @param {string} titulo - El título descriptivo para la sección actual de resultados.
  */
 function mostrarResultados(peliculas, titulo) {
     const contenedor = document.getElementById("resultados");
@@ -338,8 +338,8 @@ function mostrarResultados(peliculas, titulo) {
 }
 
 /**
- * Handles the click event for opening the detail view of a movie.
- * @param {string} imdbID - The IMDb ID to fetch details for.
+ * Maneja el evento de selección para abrir la vista detallada de una película específica.
+ * @param {string} imdbID - El identificador IMDb necesario para realizar la consulta.
  */
 async function abrirDetallePelicula(imdbID) {
     buscarPorIDDirecto(imdbID);
@@ -347,8 +347,8 @@ async function abrirDetallePelicula(imdbID) {
 }
 
 /**
- * Renders the detailed view of a single movie.
- * @param {Object} pelicula - The movie detail payload from the API.
+ * Renderiza la vista en detalle para una sola película o serie.
+ * @param {Object} pelicula - El objeto detallado proporcionado por la API.
  */
 function mostrarDetalle(pelicula) {
     const posterUrl = validarPoster(pelicula.Poster);
@@ -386,7 +386,7 @@ function mostrarDetalle(pelicula) {
             }
 
             <a href="https://imdb.com/title/${pelicula.imdbID}" target="_blank" rel="noopener" class="imdb-link">
-                🔗 Ver en IMDb &rarr;
+                Ver en IMDb &rarr;
             </a>
         </div>
     `;
@@ -396,8 +396,71 @@ function mostrarDetalle(pelicula) {
 }
 
 /**
- * Triggers initial setup on DOM load.
+ * Inicia la configuración y carga inicial una vez que el árbol DOM está completamente formado.
  */
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     buscarTodas();
+
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 });
+
+// ============================================
+// Lógica de Tema (Modo Claro / Oscuro)
+// ============================================
+
+/**
+ * Inicializa el tema basándose en localStorage o en la preferencia del sistema.
+ */
+function initTheme() {
+    const savedTheme = localStorage.getItem('mankind-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeIcons('dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        updateThemeIcons('light');
+    }
+}
+
+/**
+ * Alterna entre el modo claro y el modo oscuro.
+ */
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    if (newTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('mankind-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('mankind-theme', 'light');
+    }
+    
+    updateThemeIcons(newTheme);
+}
+
+/**
+ * Actualiza los íconos del botón de tema para mostrar el sol o la luna.
+ * @param {string} theme - El tema actual ('light' o 'dark').
+ */
+function updateThemeIcons(theme) {
+    const iconSun = document.getElementById('icon-sun');
+    const iconMoon = document.getElementById('icon-moon');
+    
+    if (!iconSun || !iconMoon) return;
+    
+    if (theme === 'dark') {
+        iconSun.style.display = 'block';
+        iconMoon.style.display = 'none';
+    } else {
+        iconSun.style.display = 'none';
+        iconMoon.style.display = 'block';
+    }
+}

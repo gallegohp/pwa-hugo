@@ -15,7 +15,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
-    <!-- Typography -->
+    <!-- Tipografía Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,19 +24,36 @@
 </head>
 <body>
 
-    <!-- Application Header -->
+    <!-- Encabezado de la Aplicación -->
     <header id="app-header">
         <div class="header-inner">
             <div class="header-brand">
-                <span class="brand-icon">🎬</span>
                 <div>
                     <h1>Mankind</h1>
                     <p class="brand-sub">OMDb Movie Database</p>
                 </div>
             </div>
+            
+            <!-- Botón de Modo Oscuro/Claro -->
+            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
         </div>
 
-        <!-- Filter Controls -->
+        <!-- Controles de Filtros -->
         <div class="filters-bar">
             
             <button class="filter-pill active" id="btn-todas" onclick="buscarTodas(); setActiveGlobal(this)">
@@ -48,8 +65,8 @@
                     Tipo <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorTipo('movie'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">🎬 Películas</button>
-                    <button onclick="buscarPorTipo('series'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">📺 Series</button>
+                    <button onclick="buscarPorTipo('movie'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">Películas</button>
+                    <button onclick="buscarPorTipo('series'); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-tipo .filter-pill'))">Series</button>
                 </div>
             </div>
 
@@ -74,10 +91,10 @@
                     Rating <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button onclick="buscarPorClasificacion(8, 10); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 8 – 10</button>
-                    <button onclick="buscarPorClasificacion(6, 7.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 6 – 7.9</button>
-                    <button onclick="buscarPorClasificacion(4, 5.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ 4 – 5.9</button>
-                    <button onclick="buscarPorClasificacion(0, 3.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">⭐ Menos de 4</button>
+                    <button onclick="buscarPorClasificacion(8, 10); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">8.0 – 10.0</button>
+                    <button onclick="buscarPorClasificacion(6, 7.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">6.0 – 7.9</button>
+                    <button onclick="buscarPorClasificacion(4, 5.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">4.0 – 5.9</button>
+                    <button onclick="buscarPorClasificacion(0, 3.9); closeAllDropdowns(); setActiveGlobal(document.querySelector('#drop-rating .filter-pill'))">Menos de 4.0</button>
                 </div>
             </div>
 
@@ -97,7 +114,7 @@
         </div>
     </header>
 
-    <!-- Search View -->
+    <!-- Vista de Búsqueda -->
     <main id="pagina-busqueda" class="pagina activa">
         <div id="resultados" class="contenedor-resultados">
             <div class="carga">
@@ -107,7 +124,7 @@
         </div>
     </main>
 
-    <!-- Detail View -->
+    <!-- Vista de Detalle -->
     <main id="pagina-detalle" class="pagina">
         <div class="detalle-container">
             <button class="btn-back" onclick="volverABusqueda()">← Volver</button>
@@ -116,7 +133,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Pie de Página -->
     <footer>
         <p>Mankind · OMDb Movie Explorer</p>
     </footer>
@@ -124,8 +141,8 @@
     <script src="js/app.js"></script>
     <script>
         /**
-         * Toggles the visibility of a dropdown menu.
-         * @param {string} id - The ID of the dropdown container.
+         * Alterna la visibilidad de un menú desplegable específico.
+         * @param {string} id - El identificador del contenedor del menú desplegable.
          */
         function toggleDropdown(id) {
             const dropdown = document.getElementById(id);
@@ -137,14 +154,14 @@
         }
 
         /**
-         * Closes all open dropdown menus.
+         * Cierra todos los menús desplegables que se encuentren abiertos.
          */
         function closeAllDropdowns() {
             document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
         }
 
         /**
-         * Event listener to close dropdowns when clicking outside.
+         * Evento para cerrar los menús desplegables al hacer clic fuera de ellos.
          */
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.filter-dropdown') && !e.target.closest('.filter-pill')) {
@@ -153,15 +170,15 @@
         });
 
         /**
-         * Event listener to close dropdowns on Escape key press.
+         * Evento para cerrar los menús desplegables al presionar la tecla Escape.
          */
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeAllDropdowns();
         });
 
         /**
-         * Sets the active visual state for the selected filter pill.
-         * @param {HTMLElement} btn - The button element to set as active.
+         * Establece el estado visual activo para el filtro seleccionado.
+         * @param {HTMLElement} btn - El elemento del botón que se marcará como activo.
          */
         function setActiveGlobal(btn) {
             document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
@@ -169,16 +186,16 @@
         }
 
         /**
-         * Service Worker registration for PWA capabilities.
+         * Registro del Service Worker para habilitar las capacidades PWA (Aplicación Web Progresiva).
          */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => {
-                        console.log('SW registered:', registration.scope);
+                        console.log('Service Worker registrado correctamente:', registration.scope);
                     })
                     .catch(error => {
-                        console.log('SW registration failed:', error);
+                        console.error('Fallo en el registro del Service Worker:', error);
                     });
             });
         }

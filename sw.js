@@ -1,7 +1,7 @@
 /**
- * Mankind OMDb Movie Explorer Service Worker
- * Implements a Network First caching strategy for local assets,
- * falling back to cache when offline.
+ * Service Worker Principal - Mankind OMDb Movie Explorer
+ * Implementa una estrategia de red prioritaria (Network First) para los archivos locales,
+ * y recurre a la memoria caché cuando no hay conexión a internet.
  */
 
 const CACHE_NAME = 'mankind-omdb-v5.0';
@@ -16,7 +16,7 @@ const urlsToCache = [
 ];
 
 /**
- * Install event: caches essential shell resources.
+ * Evento de instalación: guarda en caché los recursos esenciales de la interfaz.
  */
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -26,13 +26,13 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(urlsToCache);
             })
             .catch((error) => {
-                console.error('Cache installation failed:', error);
+                console.error('Fallo en la instalación de la caché:', error);
             })
     );
 });
 
 /**
- * Activate event: cleans up old caches to ensure fresh assets.
+ * Evento de activación: limpia cachés antiguas para asegurar que se sirvan archivos frescos.
  */
 self.addEventListener('activate', (event) => {
     event.waitUntil(
@@ -51,8 +51,8 @@ self.addEventListener('activate', (event) => {
 });
 
 /**
- * Fetch event: uses Network First strategy for local assets,
- * completely bypassing cache for OMDb API requests.
+ * Evento de recuperación (fetch): usa estrategia de red prioritaria para archivos locales,
+ * e ignora completamente la caché para las peticiones a la API de OMDb.
  */
 self.addEventListener('fetch', (event) => {
     if (event.request.url.includes('omdbapi.com')) {
@@ -60,7 +60,7 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .catch(() => {
                     return new Response(JSON.stringify({
-                        Error: 'Offline mode active. No connection.'
+                        Error: 'Modo sin conexión activo. No hay red disponible.'
                     }), {
                         headers: { 'Content-Type': 'application/json' }
                     });

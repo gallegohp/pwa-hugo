@@ -38,6 +38,23 @@
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme="dark"] {
+    --bg: #09090b;
+    --bg-subtle: #18181b;
+    --surface: #09090b;
+    --surface-hover: #27272a;
+    --border: #27272a;
+    --border-strong: #3f3f46;
+
+    --text-primary: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+
+    --accent: #3b82f6;
+    --accent-light: rgba(59, 130, 246, 0.1);
+    --accent-border: rgba(59, 130, 246, 0.3);
+}
+
 html { 
     scroll-behavior: smooth; 
 }
@@ -52,6 +69,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #app-header {
@@ -61,6 +79,7 @@ body {
     top: 0;
     z-index: 200;
     box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .header-inner {
@@ -96,6 +115,24 @@ body {
     color: var(--text-muted);
     font-weight: 400;
     margin-top: 1px;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
 }
 
 .filters-bar {
@@ -249,7 +286,7 @@ body {
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: var(--transition);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background-color 0.3s ease;
     display: flex;
     flex-direction: column;
 }
@@ -301,7 +338,7 @@ body {
 }
 
 .imagen-no-disponible::before {
-    content: "🎞️";
+    content: "";
     font-size: 2rem;
     opacity: 0.5;
 }
@@ -366,6 +403,7 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .detalle-poster {
@@ -398,7 +436,7 @@ body {
 }
 
 .imagen-no-disponible-detalle::before {
-    content: "🎞️";
+    content: "";
     font-size: 3rem;
     opacity: 0.4;
 }
@@ -504,7 +542,7 @@ body {
 }
 
 .mensaje-inicial::before {
-    content: "🎬";
+    content: "";
     font-size: 2.5rem;
     opacity: 0.5;
 }
@@ -543,14 +581,14 @@ body {
     text-align: center;
     color: var(--text-secondary);
     font-size: 0.9rem;
-    background: #fff5f5;
-    border: 1px solid #fecaca;
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
     border-radius: var(--radius-md);
     padding: 2rem;
 }
 
 .error::before {
-    content: "⚠️";
+    content: "";
     font-size: 2rem;
 }
 
